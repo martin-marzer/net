@@ -1,7 +1,5 @@
-/*
-using Aseguradora.Aplicacion.Interfaces;
 using Aseguradora.Aplicacion.Entidades;
-
+using Aseguradora.Aplicacion.Interfaces;
 namespace Aseguradora.Repositorios;
 public class RepositorioVehiculo:IRepositorioVehiculo
 {
@@ -9,8 +7,13 @@ public class RepositorioVehiculo:IRepositorioVehiculo
     {
         using (var context= new AseguradoraContext())
         {
-            context.Add(vehiculo);
-            context.SaveChanges();
+            var registro= context.Titulares.FirstOrDefault(r=>r.ID==vehiculo.ID);//si no lo encuentra registro = null
+            if(registro!=null)
+            {
+                context.Add(vehiculo);
+                context.SaveChanges();
+            }else Console.WriteLine("No se pudo agregar el vehiculo.");
+            
         }
     }
 
@@ -71,7 +74,7 @@ public class RepositorioVehiculo:IRepositorioVehiculo
                 var registroT= context.Titulares.FirstOrDefault(r=>r.ID==nuevoIDtitular); //busca si el titular con la id nueva existe
                 if (nuevoIDtitular>0 && registro!=null)
                 {
-                    registro.IDTitular = nuevoIDtitular;
+                    registro.TitularId = nuevoIDtitular;
 
                 }else Console.WriteLine("ID del titular no válido, no se pudo modificar.");
 
@@ -103,4 +106,3 @@ public class RepositorioVehiculo:IRepositorioVehiculo
         }
     }
 }
-*/

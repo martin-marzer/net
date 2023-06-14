@@ -4,13 +4,7 @@ using Aseguradora.Aplicacion.Interfaces;
 namespace Aseguradora.Repositorios;
 
 class RepositorioSiniestro : IRepositorioSiniestro
-{
-    public AseguradoraContext? Context {get;}
-
-    RepositorioSiniestro(AseguradoraContext? db){
-        Context = db;
-    }
-    public void AgregarSiniestro(Siniestro siniestro)
+{    public void AgregarSiniestro(Siniestro siniestro)
     {
         using (var context = new AseguradoraContext())
         {

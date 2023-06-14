@@ -12,11 +12,14 @@ public class AseguradoraContext : DbContext
     public DbSet<Tercero> Terceros { get; set; }
     #nullable restore
 
-    protected override void OnConfiguring(DbContextOptionsBuilder
-    optionsBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // Ruta personalizada donde deseas crear el archivo SQLite, x defecto se crea el archivo en el mismo lugar q ejecutas program.cs (Aseguradora.UI)
-        string dbPath = @"..\Aseguradora.Repositorios\Aseguradora.sqlite"; 
+        string dbPath;
+        string separador = Path.DirectorySeparatorChar.ToString();
+        if(separador == @"\") dbPath = @"..\Aseguradora.Repositorios\Aseguradora.sqlite";
+        else  dbPath = "../Aseguradora.Repositorios/Aseguradora.sqlite";
+
         optionsBuilder.UseSqlite($"Data Source={dbPath}");
         
     }
@@ -29,6 +32,7 @@ public class AseguradoraContext : DbContext
         //     .WithMany()
         //     .HasForeignKey(v => v.TitularId);
 
+        /* relacion entre entidades (se establecen claves foraneas, igual hay q acomodar)
         modelBuilder.Entity<Poliza>()
             .HasOne<Vehiculo>()
             .WithMany()
@@ -43,5 +47,6 @@ public class AseguradoraContext : DbContext
             .HasOne<Siniestro>()
             .WithMany()
             .HasForeignKey(t => t.SiniestroId);
+    */ 
     }
 }
