@@ -6,6 +6,11 @@ using Aseguradora.Aplicacion.UseCases;
 using Aseguradora.Aplicacion.Interfaces;
 using Aseguradora.Aplicacion.Entidades;
 
+using (var db = new AseguradoraContext())
+{
+    db.Database.EnsureCreated();
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -64,7 +69,3 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
-using (var db = new AseguradoraContext())
-{
-    db.Database.EnsureCreated();
-}

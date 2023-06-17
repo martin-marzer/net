@@ -10,7 +10,6 @@ public class RepositorioTitular : IRepositorioTitular{
             var tAux = context.Titulares.SingleOrDefault(t => t.DNI == titular.DNI);
             if(tAux != null)throw new Exception("El titular ya existe");
             context.Add(titular);
-            titular.DNI = 11111;
             context.SaveChanges();
         }   
     }
