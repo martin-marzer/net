@@ -7,6 +7,7 @@ public class Vehiculo
     public string Marca {get;set;} = "No tiene marca";
     public int AnioFabricacion {get;set;}
     public int TitularId {get;set;}
+    public List<Poliza>? polizas {get;set;}
 
 
     public Vehiculo(){}

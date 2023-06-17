@@ -7,6 +7,7 @@ public class Siniestro {
     public DateTime FechaDeingreso {get;set;}
     public DateTime FechaDeOcurrencia {get;set;}
     public int PolizaId {get;set;}
+    public List<Tercero>? terceros {get;set;}
 
     public Siniestro(){}
     public Siniestro(int polizaId, String direccion, String email,String direccionDelHecho, String descripciónDelAccidente, 

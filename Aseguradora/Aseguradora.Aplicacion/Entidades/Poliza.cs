@@ -9,6 +9,7 @@ public class Poliza
     public DateTime FechaDeInicioDeVigencia {get;set;}
     public DateTime FechaDeFinDeVigencia {get;set;}
     public int VehiculoId {get;set;}
+    public List<Siniestro>? siniestros {get;set;}
 
     public Poliza(){}
     public Poliza(int vehiculoId, double valorAsegurado, String franquicia,String tipoDeCobertura, 
