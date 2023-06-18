@@ -5,10 +5,11 @@ namespace Aseguradora.Repositorios;
 
 public class RepositorioTitular : IRepositorioTitular{
 
+    
     public void AgregarTitular(Titular titular){
         using(var context = new AseguradoraContext()){
             var tAux = context.Titulares.SingleOrDefault(t => t.DNI == titular.DNI);
-            if(tAux != null)throw new Exception("El titular ya existe");
+            if(tAux != null)throw new Exception("El titular ya existe, no pudo ser agregado");
             context.Add(titular);
             context.SaveChanges();
         }   

@@ -2,6 +2,7 @@
 @inject NavigationManager Navegador;
 @inject AgregarTitularUseCase AgregarTitularUseCase
 
+
 <input placeholder="Nombre" @bind="_titular.Nombre" class="form-control">
 <input placeholder="Apellido" @bind="_titular.Apellido" class="form-control">
 <input placeholder="DNI" @bind="_titular.DNI" class="form-control">
@@ -9,12 +10,29 @@
 <input placeholder="Email" @bind="_titular.Email" class="form-control">
 <input placeholder="Telefono" @bind="_titular.Telefono" class="form-control">
 <button class="btn btn-primary" @onclick="Agregar">Agregar Titular</button>
+@if (!string.IsNullOrEmpty(mensaje))
+{
+    <div style="color: @(mensajeClase == "success-message" ? "green" : "red")" >@mensaje</div>
+}
 @code {
+string mensaje="";
+string mensajeClase="";
 Titular _titular = new Titular();
 void Agregar()
 {
-AgregarTitularUseCase.Ejecutar(_titular);
-_titular = new Titular();
+    try{
+        AgregarTitularUseCase.Ejecutar(_titular);
+        _titular = new Titular();
+        mensaje="Agregado correctamente.";
+        mensajeClase = "success-message";
+
+    }
+    catch(Exception ex)
+    {
+        mensaje=ex.Message;
+        mensajeClase = "error-message";
+    }
+
 //Navegador.NavigateTo("listadotitulares"); //me lleva a la lista de titulares (cuando este hecha)
 }
 }
