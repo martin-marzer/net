@@ -6,6 +6,12 @@ namespace Aseguradora.Repositorios;
 public class RepositorioTitular : IRepositorioTitular{
 
     
+    public Titular? ObtenerTitular(int id){
+        using(var context = new AseguradoraContext()){
+            var titular = context.Titulares.SingleOrDefault(t => t.ID == id);
+            return titular;
+        }
+    }
     public void AgregarTitular(Titular titular){
         using(var context = new AseguradoraContext()){
             var tAux = context.Titulares.SingleOrDefault(t => t.DNI == titular.DNI);
