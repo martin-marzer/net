@@ -118,12 +118,11 @@
     }
      
 
-    Titular? titularParaModificar=null;
 
-
-    private void ModificarTitular(Titular titular)
+    
+    private void ModificarTitular(Titular tit)
     {
-        Navegador.NavigateTo("EditarTitular/");
+        Navegador.NavigateTo($"/editartitular/{tit.ID}");
     }
 
 

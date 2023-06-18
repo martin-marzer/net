@@ -1,6 +1,7 @@
 @page "/editartitular/{Id:int?}"
 @inject ModificarTitularUseCase ModificarTitularUseCase
 @inject ObtenerTitularUseCase ObtenerTitularUseCase
+@inject NavigationManager Navegador
 
 <h3>Modificando al titular</h3>
 <input placeholder="_titular.Nombre" @bind="_titular.Nombre" class="form-control">
@@ -13,7 +14,7 @@
 
 @code
 {
-    [Parameter] Titular? _titular {get; set;}
+    public Titular _titular = new Titular();
     [Parameter] public int? Id {get; set;}
         protected override void OnParametersSet()
         {
@@ -27,6 +28,8 @@
     {
         ModificarTitularUseCase.Ejecutar(_titular);
         _titular = new Titular();
+        Navegador.NavigateTo("/listadotitulares");
+        
     }
 }
 

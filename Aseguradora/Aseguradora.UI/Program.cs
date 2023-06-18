@@ -49,6 +49,10 @@ builder.Services.AddTransient<ModificarTerceroUseCase>();
 builder.Services.AddScoped<IRepositorioTercero, RepositorioTercero>();
 
 
+
+builder.Services.AddTransient<ObtenerTitularUseCase>();
+
+
 //PREGUNTAR POR LISTARTITULARESUSECASE
 //PREGUNTAR POR JOURNAL MODE
 
