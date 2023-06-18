@@ -48,6 +48,7 @@
                     }
                 </th>
                 <th>TELEFONO</th>
+                <th>DIRECCION</th>
                 <th>ACCIÓN</th>
             </tr>
         </thead>
@@ -64,6 +65,7 @@
                     <td>@titular.Apellido</td>
                     <td>@titular.Email</td>
                     <td>@titular.Telefono</td>
+                    <td>@titular.Direccion</td>
                     <td>
                         <button class="btn btn-primary"> 
                             <span class="oi oi-pencil" @onclick="()=>ModificarTitular(titular)" ></span>
@@ -71,6 +73,7 @@
                         <button class="btn btn-danger"  @onclick="()=>ConfirmarEliminacion(titular)">
                             <span class="oi oi-trash"></span>
                         </button>
+                        <button class="btn btn-primary">Lista de Vehiculos</button>
                     </td>
                 </tr>
             }
@@ -117,12 +120,11 @@
         }
     }
      
-
-
     
     private void ModificarTitular(Titular tit)
     {
         Navegador.NavigateTo($"/editartitular/{tit.ID}");
+        lista = ListarTitularesUseCase.Ejecutar(); //se actualiza la lista de clientes
     }
 
 
