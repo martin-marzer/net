@@ -1,6 +1,7 @@
 @page "/listadotitulares"
 @inject ListarTitularesUseCase ListarTitularesUseCase
 @inject EliminarTitularUseCase EliminarTitularUseCase
+@inject NavigationManager Navegador
 
 
 
@@ -65,7 +66,7 @@
                     <td>@titular.Telefono</td>
                     <td>
                         <button class="btn btn-primary"> 
-                            <span class="oi oi-pencil"></span>
+                            <span class="oi oi-pencil" @onclick="()=>ModificarTitular(titular)" ></span>
                         </button>
                         <button class="btn btn-danger"  @onclick="()=>ConfirmarEliminacion(titular)">
                             <span class="oi oi-trash"></span>
@@ -101,6 +102,7 @@
 
     ConfirmarAccion dialogo = null!;
     Titular? titularParaEliminar = null;
+
     private void ConfirmarEliminacion(Titular titular)
     {
         titularParaEliminar = titular;
@@ -115,6 +117,16 @@
         }
     }
      
+
+    Titular? titularParaModificar=null;
+
+
+    private void ModificarTitular(Titular titular)
+    {
+        Navegador.NavigateTo("EditarTitular/");
+    }
+
+
     private string campoOrdenado = "";
     private bool ordenAscendente = true;
 
