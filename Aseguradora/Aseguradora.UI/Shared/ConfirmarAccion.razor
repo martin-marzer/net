@@ -1,0 +1,33 @@
+@if(visible)
+{
+    <div class="confirmar-contenedor">
+    <div class="confirmar-contenido">
+    <h3>@Mensaje</h3>
+    <button class="btn btn-primary" @onclick="()=>Cerrar(true)">Aceptar</button>
+    <button class="btn btn-secondary" @onclick="()=>Cerrar(false)">Cancelar</button>
+    </div>
+    </div> <!--Los divs son para darle flow al mensaje que salga para confirmar la accion-->
+}
+@code{
+private bool visible = false;
+[Parameter]
+public string Mensaje {get;set;}="";
+
+[Parameter]
+public EventCallback OnConfirmado{get;set;} //se declara un evento que puede ser pasado como parametro
+
+public void Mostrar()
+{
+    visible=true;
+    StateHasChanged();
+}
+void Cerrar(Boolean confirmar)
+{
+    visible=false;
+    if(confirmar)
+    {
+        OnConfirmado.InvokeAsync(); //lanza un evento
+    }
+    StateHasChanged();
+}
+}
