@@ -1,0 +1,160 @@
+@page "/listadotitulares"
+@inject ListarTitularesUseCase ListarTitularesUseCase
+@inject EliminarTitularUseCase EliminarTitularUseCase
+
+
+
+<PageTitle>Listado Titulares</PageTitle>
+
+<div style="overflow-x:@(!tieneElementos ? "hidden" : "scroll");">
+    <ConfirmarAccion @ref="dialogo" OnConfirmado="Eliminar"/>
+    <button type="button" style="background-color:#549539;border-radius: 0.5rem;padding: 0.5rem 0.2rem;width: 10rem;">
+        <a href="/AgregarTitular" style="text-decoration: none;color: white;display: flex;justify-content: space-around;align-items: baseline;">
+            <p style="margin: 0;">Agregar Titular</p> <span class="oi oi-plus" style="color: white;"></span>
+        </a>
+    </button>
+    
+    <table id="table" class="table">
+        <thead>
+            <tr>
+                <th> ID
+                    @if (tieneElementos){
+                        <button @onclick='() => OrdenarPorCampo("ID")' style="background-color: white;border: none;padding: 0;"> 
+                            <span class="oi oi-chevron-bottom"></span>
+                        </button> 
+                    }
+                </th>
+                <th>DNI
+                    @if (tieneElementos){
+                        <button @onclick='() => OrdenarPorCampo("Dni")' style="background-color: white;border: none;padding: 0;"> 
+                            <span class="oi oi-chevron-bottom"></span>
+                        </button> 
+                    }
+                </th>
+                <th>NOMBRE</th>
+                <th>APELLIDO
+                    @if (tieneElementos){
+                        <button @onclick='() => OrdenarPorCampo("Apellido")' style="background-color: white;border: none;padding: 0;"> 
+                            <span class="oi oi-chevron-bottom"></span>
+                        </button> 
+                    }
+                </th>
+                <th>EMAIL
+                    @if (tieneElementos){
+                        <button @onclick='() => OrdenarPorCampo("Email")' style="background-color: white;border: none;padding: 0;"> 
+                            <span class="oi oi-chevron-bottom"></span>
+                        </button> 
+                    }
+                </th>
+                <th>TELEFONO</th>
+                <th>ACCIÓN</th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (!tieneElementos) {
+            <p>No hay elementos</p>
+        } else {
+            @foreach (var titular in lista)
+            {
+                <tr>
+                    <td>@titular.ID</td>
+                    <td>@titular.DNI</td>
+                    <td>@titular.Nombre</td>
+                    <td>@titular.Apellido</td>
+                    <td>@titular.Email</td>
+                    <td>@titular.Telefono</td>
+                    <td>
+                        <button class="btn btn-primary"> 
+                            <span class="oi oi-pencil"></span>
+                        </button>
+                        <button class="btn btn-danger"  @onclick="()=>ConfirmarEliminacion(titular)">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+
+
+</div>
+
+
+
+@code {
+    List<Titular> lista = new List<Titular>();
+    bool tieneElementos = false;
+    protected override void OnInitialized()
+    {
+        lista = ListarTitularesUseCase.Ejecutar();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(lista.Count > 0) 
+        {
+            tieneElementos = true;
+
+        }
+    }
+
+    ConfirmarAccion dialogo = null!;
+    Titular? titularParaEliminar = null;
+    private void ConfirmarEliminacion(Titular titular)
+    {
+        titularParaEliminar = titular;
+        dialogo.Mensaje = $"¿Desea eliminar al titular {titular.Nombre} {titular.Apellido}?";
+        dialogo.Mostrar();
+    }
+    private void Eliminar()
+        {
+        if (titularParaEliminar != null) {
+            EliminarTitularUseCase.Ejecutar(titularParaEliminar.ID);
+            lista = ListarTitularesUseCase.Ejecutar(); //se actualiza la lista de clientes
+        }
+    }
+     
+    private string campoOrdenado = "";
+    private bool ordenAscendente = true;
+
+    private void OrdenarPorCampo(string campo)
+    {
+        if (campo == campoOrdenado)
+            ordenAscendente = !ordenAscendente;
+        else
+            ordenAscendente = false;
+
+        campoOrdenado = campo;
+
+        switch (campo)
+        {
+            case "ID":
+                if (ordenAscendente)
+                    lista = lista.OrderBy(e => e.ID).ToList();
+                else
+                    lista = lista.OrderByDescending(e => e.ID).ToList();
+                break;
+            case "Dni":
+                if (ordenAscendente)
+                    lista = lista.OrderBy(e => e.DNI).ToList();
+                else
+                    lista = lista.OrderByDescending(e => e.DNI).ToList();
+                break;
+            case "Apellido":
+                if (ordenAscendente)
+                    lista = lista.OrderBy(e => e.Apellido).ToList();
+                else
+                    lista = lista.OrderByDescending(e => e.Apellido).ToList();
+                break;
+            case "Email":
+                if (ordenAscendente)
+                    lista = lista.OrderBy(e => e.Email).ToList();
+                else
+                    lista = lista.OrderByDescending(e => e.Email).ToList();
+                break;
+            // Otros casos para más campos de ordenación
+        }
+    }
+
+}
