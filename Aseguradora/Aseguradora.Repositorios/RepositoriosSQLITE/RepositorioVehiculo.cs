@@ -14,7 +14,7 @@ public class RepositorioVehiculo:IRepositorioVehiculo
         using (var context= new AseguradoraContext())
         {
             if(context.Vehiculos.Any(v=>v.Dominio==vehiculo.Dominio))throw new Exception("probablemente ya exista ese vehiculo");
-            if(!context.Titulares.Any(t=>t.ID==vehiculo.TitularId))throw new Exception("no existe ese titular no pudo ser agregado");
+            if(!context.Titulares.Any(t=>t.ID==vehiculo.TitularId))throw new Exception("no existe ese titular, no pudo ser agregado");
             context.Add(vehiculo);
             context.SaveChanges();
         }
@@ -38,12 +38,12 @@ public class RepositorioVehiculo:IRepositorioVehiculo
     {
         using (var context= new AseguradoraContext())
         {
-            var registro= context.Vehiculos.FirstOrDefault(r=>r.ID==id);//si no lo encuentra registro = null
-            if(registro!=null)
-            {
-                context.Vehiculos.Remove(registro);
-                context.SaveChanges();
-            }
+            var registro = context.Vehiculos.SingleOrDefault(v => v.ID == id);
+            if(registro == null) throw new Exception("No se pudo eliminar, el vehiculo no existe");
+
+            context.Vehiculos.Remove(registro);
+            context.SaveChanges();
+            
         }
     }
 

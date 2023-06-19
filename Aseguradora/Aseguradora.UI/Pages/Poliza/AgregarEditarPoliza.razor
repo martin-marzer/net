@@ -1,0 +1,76 @@
+@page "/poliza/{Id:int?}"
+@inject NavigationManager Navegador;
+@inject ObtenerPolizaUseCase ObtenerPolizaUseCase
+@inject ModificarPolizaUseCase ModificarPolizaUseCase
+@inject AgregarPolizaUseCase AgregarPolizaUseCase
+
+@if (_esNuevoPoliza)
+{
+    <h3>Agregando una nueva Poliza</h3>
+}
+else
+{
+    <h3>Modificando a la Poliza con Franquicia:"@_poliza.Franquicia", VehiculoId: "@_poliza.VehiculoId"</h3>
+}
+
+
+<input placeholder="Valor asegurado" @bind="_poliza.ValorAsegurado" class="form-control">
+<input placeholder="Franquicia" @bind="_poliza.Franquicia" class="form-control">
+<input placeholder="Tipo De Cobertura" @bind="_poliza.TipoDeCobertura" class="form-control">
+<input type="date" placeholder="Fecha inicio vigencia" @bind="_poliza.FechaDeInicioDeVigencia" class="form-control">
+<input type="date" placeholder="Fecha fin vigencia" @bind="_poliza.FechaDeFinDeVigencia" class="form-control">
+@if (_esNuevoPoliza){
+    <input placeholder="id vehiculo" @bind="_poliza.VehiculoId" class="form-control">
+    <button class="btn btn-primary" @onclick="Agregar">Agregar</button>
+}else {
+    <button class="btn btn-primary" @onclick="Modificar">Editar</button>
+}
+@if (!string.IsNullOrEmpty(mensaje))
+{
+    <div style="color: @(mensajeClase == "success-message" ? "green" : "red")" >@mensaje</div>
+}
+@code {
+    string mensaje="";
+    string mensajeClase="";
+    Poliza _poliza = new Poliza();
+    void Agregar()
+    {
+        if (_esNuevoPoliza){
+            try{
+                AgregarPolizaUseCase.Ejecutar(_poliza);
+                _poliza = new Poliza();
+                mensaje="Agregado correctamente.";
+                mensajeClase = "success-message";
+            }
+            catch(Exception ex)
+            {
+                mensaje=ex.Message;
+                mensajeClase = "error-message";
+            }
+        }
+        else  ModificarPolizaUseCase.Ejecutar(_poliza);
+
+    }
+
+    [Parameter] 
+    public int? Id {get; set;}
+    bool _esNuevoPoliza=true;
+
+        protected override void OnParametersSet()
+        {
+            if(Id != null){
+                var polizaHallado = ObtenerPolizaUseCase.Ejecutar(Id.Value);
+                if(polizaHallado != null)
+                    _poliza = polizaHallado;
+                    _esNuevoPoliza = false;
+            }
+        }
+    
+    void Modificar()
+    {
+        ModificarPolizaUseCase.Ejecutar(_poliza);
+        _poliza = new Poliza();
+        Navegador.NavigateTo("/listadopolizas");
+        
+    }
+}

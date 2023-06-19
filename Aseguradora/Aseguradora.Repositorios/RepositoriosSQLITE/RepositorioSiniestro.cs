@@ -16,35 +16,31 @@ public class RepositorioSiniestro : IRepositorioSiniestro
         using (var context = new AseguradoraContext())
         {
             var poliza = context.Polizas.FirstOrDefault(p => p.ID == siniestro.PolizaId);
-            if (poliza != null) {
-                if (poliza.FechaDeFinDeVigencia < siniestro.FechaDeOcurrencia){
-                    context.Add(siniestro);
-                    context.SaveChanges();
-                } else Console.WriteLine($"no podes registrar el siniestro de la fecha {siniestro.FechaDeOcurrencia}  porque tu seguro vencio el dia {poliza.FechaDeFinDeVigencia}");
-            } else Console.WriteLine("lo siento compadre, no existe ese id de poliza, intenta de nuevo ");
+            if (poliza == null) throw new Exception("lo siento compadre, no existe ese id de poliza, intenta de nuevo ");
+
+            if (poliza.FechaDeFinDeVigencia <= siniestro.FechaDeOcurrencia) throw new Exception($"no podes registrar el siniestro de la fecha {siniestro.FechaDeOcurrencia}  porque tu seguro ya vencio {poliza.FechaDeFinDeVigencia}");
+            
+            context.Add(siniestro);
+            context.SaveChanges();
         }
     }
 
-    public void ModificarSiniestro(Siniestro siniestroABuscar)
+    public void ModificarSiniestro(Siniestro siniestroModificado)
     {
         
         using (var context = new AseguradoraContext())
         {
-            var existePolizaID = context.Polizas.Any(p => p.ID == siniestroABuscar.PolizaId);
-            if (existePolizaID) {
-                var siniestroEncontrado = context.Siniestros.FirstOrDefault(s => s.ID == siniestroABuscar.ID);
-                if (siniestroEncontrado != null) {
-
-                    siniestroEncontrado.DireccionDelHecho = siniestroABuscar.DireccionDelHecho;
-                    siniestroEncontrado.DescripciónDelAccidente = siniestroABuscar.DescripciónDelAccidente;
-                    siniestroEncontrado.FechaDeingreso = siniestroABuscar.FechaDeingreso;
-                    siniestroEncontrado.FechaDeOcurrencia = siniestroABuscar.FechaDeOcurrencia;
-                    siniestroEncontrado.PolizaId = siniestroABuscar.PolizaId;
-
-                    context.SaveChanges();        
-                } else Console.WriteLine("lo siento compadre, no existe el siniestro con ese ID, intenta de nuevo ");
-            }  else Console.WriteLine("lo siento compadre, el Id de poliza que queres poner no existe, creala antes.");
+            var siniestroEncontrado = context.Siniestros.FirstOrDefault(s => s.ID == siniestroModificado.ID);
+            if (siniestroEncontrado == null) throw new Exception("lo siento compadre, no existe ese siniestro, intenta de nuevo ");
             
+            if(!context.Polizas.Any(v => v.ID == siniestroModificado.PolizaId)) throw new Exception("el id de la poliza no es valido, intenta de nuevo ");
+
+            siniestroEncontrado.DireccionDelHecho =  siniestroModificado.DireccionDelHecho;
+            siniestroEncontrado.DescripcionDelAccidente = siniestroModificado.DescripcionDelAccidente;
+            siniestroEncontrado.FechaDeingreso = siniestroModificado.FechaDeingreso;
+            siniestroEncontrado.FechaDeOcurrencia = siniestroModificado.FechaDeOcurrencia;
+
+            context.SaveChanges();
         }
     }
 

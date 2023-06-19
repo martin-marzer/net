@@ -1,0 +1,75 @@
+@page "/siniestro/{Id:int?}"
+@inject NavigationManager Navegador;
+@inject ObtenerSiniestroUseCase ObtenerSiniestroUseCase
+@inject ModificarSiniestroUseCase ModificarSiniestroUseCase
+@inject AgregarSiniestroUseCase AgregarSiniestroUseCase
+
+@if (_esNuevoSiniestro)
+{
+    <h3>Agregando un nuevo Siniestro</h3>
+}
+else
+{
+    <h3>Modificando al Siniestro "@_siniestro.DireccionDelHecho", PolizaID: "@_siniestro.PolizaId"</h3>
+}
+
+
+<input placeholder="Direccion del hecho" @bind="_siniestro.DireccionDelHecho" class="form-control">
+<input placeholder="Franquicia" @bind="_siniestro.DescripcionDelAccidente" class="form-control">
+<input type="date" placeholder="Fecha inicio vigencia" @bind="_siniestro.FechaDeingreso" class="form-control">
+<input type="date" placeholder="Fecha fin vigencia" @bind="_siniestro.FechaDeOcurrencia" class="form-control">
+@if (_esNuevoSiniestro){
+    <input placeholder="id poliza" @bind="_siniestro.PolizaId" class="form-control">
+    <button class="btn btn-primary" @onclick="Agregar">Agregar</button>
+}else {
+    <button class="btn btn-primary" @onclick="Modificar">Editar</button>
+}
+@if (!string.IsNullOrEmpty(mensaje))
+{
+    <div style="color: @(mensajeClase == "success-message" ? "green" : "red")" >@mensaje</div>
+}
+@code {
+    string mensaje="";
+    string mensajeClase="";
+    Siniestro _siniestro = new Siniestro();
+    void Agregar()
+    {
+        if (_esNuevoSiniestro){
+            try{
+                AgregarSiniestroUseCase.Ejecutar(_siniestro);
+                _siniestro = new Siniestro();
+                mensaje="Agregado correctamente.";
+                mensajeClase = "success-message";
+            }
+            catch(Exception ex)
+            {
+                mensaje=ex.Message;
+                mensajeClase = "error-message";
+            }
+        }
+        else  ModificarSiniestroUseCase.Ejecutar(_siniestro);
+
+    }
+
+    [Parameter] 
+    public int? Id {get; set;}
+    bool _esNuevoSiniestro=true;
+
+        protected override void OnParametersSet()
+        {
+            if(Id != null){
+                var siniestroHallado = ObtenerSiniestroUseCase.Ejecutar(Id.Value);
+                if(siniestroHallado != null)
+                    _siniestro = siniestroHallado;
+                    _esNuevoSiniestro = false;
+            }
+        }
+    
+    void Modificar()
+    {
+        ModificarSiniestroUseCase.Ejecutar(_siniestro);
+        _siniestro = new Siniestro();
+        Navegador.NavigateTo("/listadosiniestros");
+        
+    }
+}

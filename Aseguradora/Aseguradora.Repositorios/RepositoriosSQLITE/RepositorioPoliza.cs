@@ -13,8 +13,7 @@ public class RepositorioPoliza : IRepositorioPoliza
     }
     public void AgregarPoliza(Poliza poliza){
         using(var context = new AseguradoraContext()){
-            var pAux = context.Vehiculos.SingleOrDefault(v => v.ID == poliza.VehiculoId);
-            if(pAux == null) throw new Exception("No existe un vehiculo para dicha poliza");
+            if(!context.Vehiculos.Any(v=>v.ID==poliza.VehiculoId))throw new Exception("no existe ese vehiculo, no pudo ser agregado");
             context.Add(poliza);
             context.SaveChanges();
         }

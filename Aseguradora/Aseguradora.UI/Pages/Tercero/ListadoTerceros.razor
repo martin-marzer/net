@@ -1,0 +1,108 @@
+@page "/listadoterceros"
+@inject ListarTercerosUseCase ListarTerceroesUseCase
+@inject EliminarTerceroUseCase EliminarTerceroUseCase
+@inject NavigationManager Navegador
+
+
+
+<PageTitle>Listado Terceroes</PageTitle>
+
+<div style="overflow-x:@(!tieneElementos ? "hidden" : "scroll");">
+    <ConfirmarAccion @ref="dialogo" OnConfirmado="Eliminar"/>
+    <button type="button" style="background-color:#549539;border-radius: 0.5rem;padding: 0.5rem 0.2rem;width: 10rem;">
+        <a href="/tercero" style="text-decoration: none;color: white;display: flex;justify-content: space-around;align-items: baseline;">
+            <p style="margin: 0;">Agregar Tercero</p> <span class="oi oi-plus" style="color: white;"></span>
+        </a>
+    </button>
+    
+    <table id="table" class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>DNI</th>
+                <th>NOMBRE</th>
+                <th>APELLIDO</th>
+                <th>TELEFONO</th>
+                <th>NOMBRE DE ASEGURADORA</th>
+                <th>SINIESTROID</th>
+                <th>ACCIÓN</th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (!tieneElementos) {
+            <p>No hay elementos</p>
+        } else {
+            @foreach (var tercero in lista)
+            {
+                <tr>
+                    <td>@tercero.ID</td>
+                    <td>@tercero.DNI</td>
+                    <td>@tercero.Nombre</td>
+                    <td>@tercero.Apellido</td>
+                    <td>@tercero.Telefono</td>
+                    <td>@tercero.NombreAseguradora</td>
+                    <td>@tercero.SiniestroId</td>
+                    <td>
+                        <button class="btn btn-primary"> 
+                            <span class="oi oi-pencil" @onclick="()=>ModificarTercero(tercero)" ></span>
+                        </button>
+                        <button class="btn btn-danger"  @onclick="()=>ConfirmarEliminacion(tercero)">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+
+
+</div>
+
+
+
+@code {
+    List<Tercero> lista = new List<Tercero>();
+    bool tieneElementos = false;
+    protected override void OnInitialized()
+    {
+        lista = ListarTerceroesUseCase.Ejecutar();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(lista.Count > 0) 
+        {
+            tieneElementos = true;
+
+        }
+    }
+
+    ConfirmarAccion dialogo = null!;
+    Tercero? terceroParaEliminar = null;
+
+    private void ConfirmarEliminacion(Tercero tercero)
+    {
+        terceroParaEliminar = tercero;
+        dialogo.Mensaje = $"¿Desea eliminar al tercero {tercero.Nombre} {tercero.Apellido}?";
+        dialogo.Mostrar();
+    }
+    private void Eliminar()
+        {
+        if (terceroParaEliminar != null) {
+            EliminarTerceroUseCase.Ejecutar(terceroParaEliminar.ID);
+            lista = ListarTerceroesUseCase.Ejecutar(); //se actualiza la lista de clientes
+        }
+    }
+     
+    
+    private void ModificarTercero(Tercero tit)
+    {
+        Navegador.NavigateTo($"/tercero/{tit.ID}");
+        lista = ListarTerceroesUseCase.Ejecutar(); //se actualiza la lista de clientes
+    }
+    private void MostrarTerceroesConVehiculos(){
+        Navegador.NavigateTo("/tercerosconvehiculos");
+    }
+
+}

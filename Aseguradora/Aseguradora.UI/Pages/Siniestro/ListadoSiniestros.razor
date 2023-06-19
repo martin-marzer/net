@@ -1,0 +1,99 @@
+@page "/listadosiniestros"
+@inject ListarSiniestrosUseCase ListarSiniestrosUseCase
+@inject EliminarSiniestroUseCase EliminarSiniestroUseCase
+@inject NavigationManager Navegador
+
+
+
+<PageTitle>Listado Siniestros</PageTitle>
+
+<div style="overflow-x:@(!tieneElementos ? "hidden" : "scroll");">
+    <ConfirmarAccion @ref="dialogo" OnConfirmado="Eliminar"/>
+    <button type="button" style="background-color:#549539;border-radius: 0.5rem;padding: 0.5rem 0.2rem;width: 10rem;">
+        <a href="/siniestro" style="text-decoration: none;color: white;display: flex;justify-content: space-around;align-items: baseline;">
+            <p style="margin: 0;">Agregar Siniestro</p> <span class="oi oi-plus" style="color: white;"></span>
+        </a>
+    </button>
+    
+    <table id="table" class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>DIRECCION SUCESO</th>
+                <th>FECHA DE INGRESO</th>
+                <th>FECHA OCURRENCIA</th>
+                <th>POLIZAID</th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (!tieneElementos) {
+            <p>No hay elementos</p>
+        } else {
+            @foreach (var siniestro in lista)
+            {
+                <tr>
+                    <td>@siniestro.ID</td>
+                    <td>@siniestro.DireccionDelHecho</td>
+                    <td>@siniestro.FechaDeingreso</td>
+                    <td>@siniestro.FechaDeOcurrencia</td>
+                    <td>@siniestro.PolizaId</td>
+                    <td>
+                        <button class="btn btn-primary"> 
+                            <span class="oi oi-pencil" @onclick="()=>ModificarSiniestro(siniestro)" ></span>
+                        </button>
+                        <button class="btn btn-danger"  @onclick="()=>ConfirmarEliminacion(siniestro)">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+
+
+</div>
+
+
+
+@code {
+    List<Siniestro> lista = new List<Siniestro>();
+    bool tieneElementos = false;
+    protected override void OnInitialized()
+    {
+        lista = ListarSiniestrosUseCase.Ejecutar();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(lista.Count > 0) 
+        {
+            tieneElementos = true;
+
+        }
+    }
+
+    ConfirmarAccion dialogo = null!;
+    Siniestro? siniestroParaEliminar = null;
+
+    private void ConfirmarEliminacion(Siniestro siniestro)
+    {
+        siniestroParaEliminar = siniestro;
+        dialogo.Mensaje = $"¿Desea eliminar al siniestro {siniestro.DireccionDelHecho}  {siniestro.PolizaId}?";
+        dialogo.Mostrar();
+    }
+    private void Eliminar()
+        {
+        if (siniestroParaEliminar != null) {
+            EliminarSiniestroUseCase.Ejecutar(siniestroParaEliminar.ID);
+            lista = ListarSiniestrosUseCase.Ejecutar(); //se actualiza la lista de clientes
+        }
+    }
+     
+    
+    private void ModificarSiniestro(Siniestro tit)
+    {
+        Navegador.NavigateTo($"/siniestro/{tit.ID}");
+        lista = ListarSiniestrosUseCase.Ejecutar(); //se actualiza la lista de clientes
+    }
+}

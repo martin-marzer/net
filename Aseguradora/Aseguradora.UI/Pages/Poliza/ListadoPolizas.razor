@@ -1,0 +1,102 @@
+@page "/listadopolizas"
+@inject ListarPolizasUseCase ListarPolizasUseCase
+@inject EliminarPolizaUseCase EliminarPolizaUseCase
+@inject NavigationManager Navegador
+
+
+
+<PageTitle>Listado Polizas</PageTitle>
+
+<div style="overflow-x:@(!tieneElementos ? "hidden" : "scroll");">
+    <ConfirmarAccion @ref="dialogo" OnConfirmado="Eliminar"/>
+    <button type="button" style="background-color:#549539;border-radius: 0.5rem;padding: 0.5rem 0.2rem;width: 10rem;">
+        <a href="/poliza" style="text-decoration: none;color: white;display: flex;justify-content: space-around;align-items: baseline;">
+            <p style="margin: 0;">Agregar Poliza</p> <span class="oi oi-plus" style="color: white;"></span>
+        </a>
+    </button>
+    
+    <table id="table" class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>VALOR ASEGURADO</th>
+                <th>TIPO DE COBERTURA</th>
+                <th>FECHA INICIO VIGENCIA</th>
+                <th>FECHA FIN VIGENCIA</th>
+                <th>VEHICULOID</th>
+                <th>ACCIÓN</th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (!tieneElementos) {
+            <p>No hay elementos</p>
+        } else {
+            @foreach (var poliza in lista)
+            {
+                <tr>
+                    <td>@poliza.ID</td>
+                    <td>@poliza.ValorAsegurado</td>
+                    <td>@poliza.Franquicia</td>
+                    <td>@poliza.FechaDeInicioDeVigencia</td>
+                    <td>@poliza.FechaDeFinDeVigencia</td>
+                    <td>@poliza.VehiculoId</td>
+                    <td>
+                        <button class="btn btn-primary"> 
+                            <span class="oi oi-pencil" @onclick="()=>ModificarPoliza(poliza)" ></span>
+                        </button>
+                        <button class="btn btn-danger"  @onclick="()=>ConfirmarEliminacion(poliza)">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+
+
+</div>
+
+
+
+@code {
+    List<Poliza> lista = new List<Poliza>();
+    bool tieneElementos = false;
+    protected override void OnInitialized()
+    {
+        lista = ListarPolizasUseCase.Ejecutar();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(lista.Count > 0) 
+        {
+            tieneElementos = true;
+
+        }
+    }
+
+    ConfirmarAccion dialogo = null!;
+    Poliza? polizaParaEliminar = null;
+
+    private void ConfirmarEliminacion(Poliza poliza)
+    {
+        polizaParaEliminar = poliza;
+        dialogo.Mensaje = $"¿Desea eliminar al poliza {poliza.Franquicia}  {poliza.VehiculoId}?";
+        dialogo.Mostrar();
+    }
+    private void Eliminar()
+        {
+        if (polizaParaEliminar != null) {
+            EliminarPolizaUseCase.Ejecutar(polizaParaEliminar.ID);
+            lista = ListarPolizasUseCase.Ejecutar(); //se actualiza la lista de clientes
+        }
+    }
+     
+    
+    private void ModificarPoliza(Poliza tit)
+    {
+        Navegador.NavigateTo($"/poliza/{tit.ID}");
+        lista = ListarPolizasUseCase.Ejecutar(); //se actualiza la lista de clientes
+    }
+}
