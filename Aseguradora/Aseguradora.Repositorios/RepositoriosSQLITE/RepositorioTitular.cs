@@ -56,7 +56,7 @@ public class RepositorioTitular : IRepositorioTitular{
     {
         using(var context = new AseguradoraContext())
         {
-            return context.Titulares.Include(t => t.listaVehiculos).ToList();
+            return context.Titulares.Include(t => t.Vehiculos).ToList();
         }
     }
 

@@ -1,0 +1,74 @@
+@page "/vehiculo/{Id:int?}"
+@inject NavigationManager Navegador;
+@inject ObtenerVehiculoUseCase ObtenerVehiculoUseCase
+@inject ModificarVehiculoUseCase ModificarVehiculoUseCase
+@inject AgregarVehiculoUseCase AgregarVehiculoUseCase
+
+@if (_esNuevoVehiculo)
+{
+    <h3>Agregando un nuevo Vehiculo</h3>
+}
+else
+{
+    <h3>Modificando al Vehiculo "@_vehiculo.Dominio"</h3>
+}
+
+
+<input placeholder="Patente" @bind="_vehiculo.Dominio" class="form-control">
+<input placeholder="Marca" @bind="_vehiculo.Marca" class="form-control">
+<input placeholder="Año De Fabricacion" @bind="_vehiculo.AnioFabricacion" class="form-control">
+@if (_esNuevoVehiculo){
+    <input placeholder="id titular" @bind="_vehiculo.TitularId" class="form-control">
+    <button class="btn btn-primary" @onclick="Agregar">Agregar</button>
+}else {
+    <button class="btn btn-primary" @onclick="Modificar">Editar</button>
+}
+@if (!string.IsNullOrEmpty(mensaje))
+{
+    <div style="color: @(mensajeClase == "success-message" ? "green" : "red")" >@mensaje</div>
+}
+@code {
+    string mensaje="";
+    string mensajeClase="";
+    Vehiculo _vehiculo = new Vehiculo();
+    void Agregar()
+    {
+        if (_esNuevoVehiculo){
+            try{
+                AgregarVehiculoUseCase.Ejecutar(_vehiculo);
+                _vehiculo = new Vehiculo();
+                mensaje="Agregado correctamente.";
+                mensajeClase = "success-message";
+            }
+            catch(Exception ex)
+            {
+                mensaje=ex.Message;
+                mensajeClase = "error-message";
+            }
+        }
+        else  ModificarVehiculoUseCase.Ejecutar(_vehiculo);
+
+    }
+
+    [Parameter] 
+    public int? Id {get; set;}
+    bool _esNuevoVehiculo=true;
+
+        protected override void OnParametersSet()
+        {
+            if(Id != null){
+                var vehiculoHallado = ObtenerVehiculoUseCase.Ejecutar(Id.Value);
+                if(vehiculoHallado != null)
+                    _vehiculo = vehiculoHallado;
+                    _esNuevoVehiculo = false;
+            }
+        }
+    
+    void Modificar()
+    {
+        ModificarVehiculoUseCase.Ejecutar(_vehiculo);
+        _vehiculo = new Vehiculo();
+        Navegador.NavigateTo("/listadovehiculos");
+        
+    }
+}

@@ -1,0 +1,100 @@
+@page "/listadovehiculos"
+@inject ListarVehiculosUseCase ListarVehiculosUseCase
+@inject EliminarVehiculoUseCase EliminarVehiculoUseCase
+@inject NavigationManager Navegador
+
+
+
+<PageTitle>Listado Vehiculos</PageTitle>
+
+<div style="overflow-x:@(!tieneElementos ? "hidden" : "scroll");">
+    <ConfirmarAccion @ref="dialogo" OnConfirmado="Eliminar"/>
+    <button type="button" style="background-color:#549539;border-radius: 0.5rem;padding: 0.5rem 0.2rem;width: 10rem;">
+        <a href="/vehiculo" style="text-decoration: none;color: white;display: flex;justify-content: space-around;align-items: baseline;">
+            <p style="margin: 0;">Agregar Vehiculo</p> <span class="oi oi-plus" style="color: white;"></span>
+        </a>
+    </button>
+    
+    <table id="table" class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>DOMINIO</th>
+                <th>MARCA</th>
+                <th>AÑO DE FABRICACION</th>
+                <th>TITULARID</th>
+                <th>ACCIÓN</th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (!tieneElementos) {
+            <p>No hay elementos</p>
+        } else {
+            @foreach (var vehiculo in lista)
+            {
+                <tr>
+                    <td>@vehiculo.ID</td>
+                    <td>@vehiculo.Dominio</td>
+                    <td>@vehiculo.Marca</td>
+                    <td>@vehiculo.AnioFabricacion</td>
+                    <td>@vehiculo.TitularId</td>
+                    <td>
+                        <button class="btn btn-primary"> 
+                            <span class="oi oi-pencil" @onclick="()=>ModificarVehiculo(vehiculo)" ></span>
+                        </button>
+                        <button class="btn btn-danger"  @onclick="()=>ConfirmarEliminacion(vehiculo)">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+
+
+</div>
+
+
+
+@code {
+    List<Vehiculo> lista = new List<Vehiculo>();
+    bool tieneElementos = false;
+    protected override void OnInitialized()
+    {
+        lista = ListarVehiculosUseCase.Ejecutar();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(lista.Count > 0) 
+        {
+            tieneElementos = true;
+
+        }
+    }
+
+    ConfirmarAccion dialogo = null!;
+    Vehiculo? vehiculoParaEliminar = null;
+
+    private void ConfirmarEliminacion(Vehiculo vehiculo)
+    {
+        vehiculoParaEliminar = vehiculo;
+        dialogo.Mensaje = $"¿Desea eliminar al vehiculo {vehiculo.Marca}  {vehiculo.Dominio}?";
+        dialogo.Mostrar();
+    }
+    private void Eliminar()
+        {
+        if (vehiculoParaEliminar != null) {
+            EliminarVehiculoUseCase.Ejecutar(vehiculoParaEliminar.ID);
+            lista = ListarVehiculosUseCase.Ejecutar(); //se actualiza la lista de clientes
+        }
+    }
+     
+    
+    private void ModificarVehiculo(Vehiculo tit)
+    {
+        Navegador.NavigateTo($"/vehiculo/{tit.ID}");
+        lista = ListarVehiculosUseCase.Ejecutar(); //se actualiza la lista de clientes
+    }
+}

@@ -4,6 +4,12 @@ using Aseguradora.Aplicacion.Interfaces;
 namespace Aseguradora.Repositorios;
 public class RepositorioTercero : IRepositorioTercero
 {
+    public Tercero? ObtenerTercero(int id){
+        using(var context = new AseguradoraContext()){
+            var tercero = context.Terceros.SingleOrDefault(t => t.ID == id);
+            return tercero;
+        }
+    }
     public void AgregarTercero(Tercero tercero)
     {
         using (var context= new AseguradoraContext())

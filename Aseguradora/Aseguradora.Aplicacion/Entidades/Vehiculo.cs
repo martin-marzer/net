@@ -2,22 +2,15 @@ namespace Aseguradora.Aplicacion.Entidades;
 
 public class Vehiculo
 {
-    public int ID {get;set;} = -1;
-    public string Dominio {get;set;} = "No tiene dominio";
-    public string Marca {get;set;} = "No tiene marca";
+    public int ID {get;set;}
+    public string? Dominio {get;set;}
+    public string? Marca {get;set;}
     public int AnioFabricacion {get;set;}
     public int TitularId {get;set;}
-    public List<Poliza>? polizas {get;set;}
+    public List<Poliza> Polizas {get;set;} = new List<Poliza>();
 
 
     public Vehiculo(){}
-    public Vehiculo(string dominio, string marca, int anio, int idTitular)
-    {
-        Dominio = dominio;
-        Marca = marca;
-        AnioFabricacion = anio;
-        TitularId = idTitular;
-    }
 
     public override string ToString()
     {

@@ -10,7 +10,7 @@
 <div style="overflow-x:@(!tieneElementos ? "hidden" : "scroll");">
     <ConfirmarAccion @ref="dialogo" OnConfirmado="Eliminar"/>
     <button type="button" style="background-color:#549539;border-radius: 0.5rem;padding: 0.5rem 0.2rem;width: 10rem;">
-        <a href="/AgregarTitular" style="text-decoration: none;color: white;display: flex;justify-content: space-around;align-items: baseline;">
+        <a href="/titular" style="text-decoration: none;color: white;display: flex;justify-content: space-around;align-items: baseline;">
             <p style="margin: 0;">Agregar Titular</p> <span class="oi oi-plus" style="color: white;"></span>
         </a>
     </button>
@@ -19,35 +19,11 @@
     <table id="table" class="table">
         <thead>
             <tr>
-                <th> ID
-                    @if (tieneElementos){
-                        <button @onclick='() => OrdenarPorCampo("ID")' style="background-color: white;border: none;padding: 0;"> 
-                            <span class="oi oi-chevron-bottom"></span>
-                        </button> 
-                    }
-                </th>
-                <th>DNI
-                    @if (tieneElementos){
-                        <button @onclick='() => OrdenarPorCampo("Dni")' style="background-color: white;border: none;padding: 0;"> 
-                            <span class="oi oi-chevron-bottom"></span>
-                        </button> 
-                    }
-                </th>
+                <th>ID</th>
+                <th>DNI</th>
                 <th>NOMBRE</th>
-                <th>APELLIDO
-                    @if (tieneElementos){
-                        <button @onclick='() => OrdenarPorCampo("Apellido")' style="background-color: white;border: none;padding: 0;"> 
-                            <span class="oi oi-chevron-bottom"></span>
-                        </button> 
-                    }
-                </th>
-                <th>EMAIL
-                    @if (tieneElementos){
-                        <button @onclick='() => OrdenarPorCampo("Email")' style="background-color: white;border: none;padding: 0;"> 
-                            <span class="oi oi-chevron-bottom"></span>
-                        </button> 
-                    }
-                </th>
+                <th>APELLIDO</th>
+                <th>EMAIL</th>
                 <th>TELEFONO</th>
                 <th>DIRECCION</th>
                 <th>ACCIÓN</th>
@@ -123,53 +99,9 @@
     
     private void ModificarTitular(Titular tit)
     {
-        Navegador.NavigateTo($"/editartitular/{tit.ID}");
+        Navegador.NavigateTo($"/titular/{tit.ID}");
         lista = ListarTitularesUseCase.Ejecutar(); //se actualiza la lista de clientes
     }
-
-
-    private string campoOrdenado = "";
-    private bool ordenAscendente = true;
-
-    private void OrdenarPorCampo(string campo)
-    {
-        if (campo == campoOrdenado)
-            ordenAscendente = !ordenAscendente;
-        else
-            ordenAscendente = false;
-
-        campoOrdenado = campo;
-
-        switch (campo)
-        {
-            case "ID":
-                if (ordenAscendente)
-                    lista = lista.OrderBy(e => e.ID).ToList();
-                else
-                    lista = lista.OrderByDescending(e => e.ID).ToList();
-                break;
-            case "Dni":
-                if (ordenAscendente)
-                    lista = lista.OrderBy(e => e.DNI).ToList();
-                else
-                    lista = lista.OrderByDescending(e => e.DNI).ToList();
-                break;
-            case "Apellido":
-                if (ordenAscendente)
-                    lista = lista.OrderBy(e => e.Apellido).ToList();
-                else
-                    lista = lista.OrderByDescending(e => e.Apellido).ToList();
-                break;
-            case "Email":
-                if (ordenAscendente)
-                    lista = lista.OrderBy(e => e.Email).ToList();
-                else
-                    lista = lista.OrderByDescending(e => e.Email).ToList();
-                break;
-            // Otros casos para más campos de ordenación
-        }
-    }
-
     private void MostrarTitularesConVehiculos(){
         Navegador.NavigateTo("/titularesconvehiculos");
     }

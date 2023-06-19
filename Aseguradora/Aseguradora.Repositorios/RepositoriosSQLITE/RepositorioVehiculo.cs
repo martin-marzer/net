@@ -3,17 +3,20 @@ using Aseguradora.Aplicacion.Interfaces;
 namespace Aseguradora.Repositorios;
 public class RepositorioVehiculo:IRepositorioVehiculo
 {
+    public Vehiculo? ObtenerVehiculo(int id){
+        using(var context = new AseguradoraContext()){
+            var vehiculo = context.Vehiculos.SingleOrDefault(t => t.ID == id);
+            return vehiculo;
+        }
+    }
     public void AgregarVehiculo(Vehiculo vehiculo)
     {
         using (var context= new AseguradoraContext())
         {
-            var registro= context.Titulares.FirstOrDefault(r=>r.ID==vehiculo.ID);//si no lo encuentra registro = null
-            if(registro!=null)
-            {
-                context.Add(vehiculo);
-                context.SaveChanges();
-            }else Console.WriteLine("No se pudo agregar el vehiculo.");
-            
+            if(context.Vehiculos.Any(v=>v.Dominio==vehiculo.Dominio))throw new Exception("probablemente ya exista ese vehiculo");
+            if(!context.Titulares.Any(t=>t.ID==vehiculo.TitularId))throw new Exception("no existe ese titular no pudo ser agregado");
+            context.Add(vehiculo);
+            context.SaveChanges();
         }
     }
 

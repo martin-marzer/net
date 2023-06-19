@@ -30,24 +30,28 @@ builder.Services.AddTransient<AgregarVehiculoUseCase>();
 builder.Services.AddTransient<ListarVehiculosUseCase>();
 builder.Services.AddTransient<EliminarVehiculoUseCase>();
 builder.Services.AddTransient<ModificarVehiculoUseCase>();
+builder.Services.AddTransient<ObtenerVehiculoUseCase>();
 builder.Services.AddScoped<IRepositorioVehiculo, RepositorioVehiculo>();
 
 builder.Services.AddTransient<AgregarPolizaUseCase>();
 builder.Services.AddTransient<ListarPolizasUseCase>();
 builder.Services.AddTransient<EliminarPolizaUseCase>();
 builder.Services.AddTransient<ModificarPolizaUseCase>();
+builder.Services.AddTransient<ObtenerPolizaUseCase>();
 builder.Services.AddScoped<IRepositorioPoliza, RepositorioPoliza>();
 
 builder.Services.AddTransient<AgregarSiniestroUseCase>();
 builder.Services.AddTransient<ListarSiniestrosUseCase>();
 builder.Services.AddTransient<EliminarSiniestroUseCase>();
 builder.Services.AddTransient<ModificarSiniestroUseCase>();
+builder.Services.AddTransient<ObtenerSiniestroUseCase>();
 builder.Services.AddScoped<IRepositorioSiniestro, RepositorioSiniestro>();
 
 builder.Services.AddTransient<AgregarTerceroUseCase>();
 builder.Services.AddTransient<ListarTercerosUseCase>();
 builder.Services.AddTransient<EliminarTerceroUseCase>();
 builder.Services.AddTransient<ModificarTerceroUseCase>();
+builder.Services.AddTransient<ObtenerTerceroUseCase>();
 builder.Services.AddScoped<IRepositorioTercero, RepositorioTercero>();
 
 

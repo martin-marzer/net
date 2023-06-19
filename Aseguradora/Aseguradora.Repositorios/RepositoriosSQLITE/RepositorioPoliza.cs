@@ -3,8 +3,14 @@ using Aseguradora.Aplicacion.Interfaces;
 
 namespace Aseguradora.Repositorios;
 
-public class RepositorioPoliza : IRepositorioPoliza{
-
+public class RepositorioPoliza : IRepositorioPoliza
+{
+    public Poliza? ObtenerPoliza(int id){
+        using(var context = new AseguradoraContext()){
+            var poliza = context.Polizas.SingleOrDefault(t => t.ID == id);
+            return poliza;
+        }
+    }
     public void AgregarPoliza(Poliza poliza){
         using(var context = new AseguradoraContext()){
             var pAux = context.Vehiculos.SingleOrDefault(v => v.ID == poliza.VehiculoId);

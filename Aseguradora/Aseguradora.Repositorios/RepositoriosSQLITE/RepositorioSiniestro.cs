@@ -4,7 +4,14 @@ using Aseguradora.Aplicacion.Interfaces;
 namespace Aseguradora.Repositorios;
 
 public class RepositorioSiniestro : IRepositorioSiniestro 
-{    public void AgregarSiniestro(Siniestro siniestro)
+{   
+    public Siniestro? ObtenerSiniestro(int id){
+        using(var context = new AseguradoraContext()){
+            var siniestro = context.Siniestros.SingleOrDefault(t => t.ID == id);
+            return siniestro;
+        }
+    }
+    public void AgregarSiniestro(Siniestro siniestro)
     {
         using (var context = new AseguradoraContext())
         {

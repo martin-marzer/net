@@ -1,26 +1,16 @@
 ﻿namespace Aseguradora.Aplicacion.Entidades;
 public class Poliza
 {
-    // todo propiedades
-    public int ID {get; set;} = -1; // ------------------------------------------------------------ solo get? (solo de lectura?) Como modificarlo? (Listar modifica el ID)
+    public int ID {get; set;}
     public double ValorAsegurado {get;set;}
-    public string Franquicia {get;set;} = "No tiene franquicia";
-    public string TipoDeCobertura {get;set;}="No tiene tipo de cobertura";
+    public string? Franquicia {get;set;}
+    public string? TipoDeCobertura {get;set;}
     public DateTime FechaDeInicioDeVigencia {get;set;}
     public DateTime FechaDeFinDeVigencia {get;set;}
     public int VehiculoId {get;set;}
-    public List<Siniestro>? siniestros {get;set;}
+    public List<Siniestro> Siniestros {get;set;} = new List<Siniestro>();
 
     public Poliza(){}
-    public Poliza(int vehiculoId, double valorAsegurado, String franquicia,String tipoDeCobertura, 
-                    DateTime fechaDeInicioDeVigencia, DateTime fechaDeFinDeVigencia){
-        VehiculoId=vehiculoId;
-        ValorAsegurado=valorAsegurado;
-        Franquicia=franquicia;
-        TipoDeCobertura=tipoDeCobertura;
-        FechaDeInicioDeVigencia=fechaDeInicioDeVigencia;
-        FechaDeFinDeVigencia=fechaDeFinDeVigencia;
-    }
 
     public override String ToString(){
         return $"ID: {ID}, VehiculoId: {VehiculoId}, valorAsegurado: {ValorAsegurado}, "+ 

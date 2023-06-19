@@ -1,0 +1,77 @@
+@page "/titular/{Id:int?}"
+@inject NavigationManager Navegador;
+@inject ObtenerTitularUseCase ObtenerTitularUseCase
+@inject ModificarTitularUseCase ModificarTitularUseCase
+@inject AgregarTitularUseCase AgregarTitularUseCase
+
+@if (_esNuevoTitular)
+{
+    <h3>Agregando un nuevo Titular</h3>
+}
+else
+{
+    <h3>Modificando al Titular "@_titular.Nombre"</h3>
+}
+
+
+<input placeholder="Nombre" @bind="_titular.Nombre" class="form-control">
+<input placeholder="Apellido" @bind="_titular.Apellido" class="form-control">
+<input placeholder="DNI" @bind="_titular.DNI" class="form-control">
+<input placeholder="Direccion" @bind="_titular.Direccion" class="form-control">
+<input placeholder="Email" @bind="_titular.Email" class="form-control">
+<input placeholder="Telefono" @bind="_titular.Telefono" class="form-control">
+@if (_esNuevoTitular){
+    <button class="btn btn-primary" @onclick="Agregar">Agregar</button>
+}else {
+    <button class="btn btn-primary" @onclick="Modificar">Editar</button>
+}
+@if (!string.IsNullOrEmpty(mensaje))
+{
+    <div style="color: @(mensajeClase == "success-message" ? "green" : "red")" >@mensaje</div>
+}
+@code {
+    string mensaje="";
+    string mensajeClase="";
+    Titular _titular = new Titular();
+    void Agregar()
+    {
+        if (_esNuevoTitular){
+            try{
+                AgregarTitularUseCase.Ejecutar(_titular);
+                _titular = new Titular();
+                mensaje="Agregado correctamente.";
+                mensajeClase = "success-message";
+            }
+            catch(Exception ex)
+            {
+                mensaje=ex.Message;
+                mensajeClase = "error-message";
+            }
+        }
+        else  ModificarTitularUseCase.Ejecutar(_titular);
+
+    //Navegador.NavigateTo("listadotitulares"); //me lleva a la lista de titulares (cuando este hecha)
+    }
+
+    [Parameter] 
+    public int? Id {get; set;}
+    bool _esNuevoTitular=true;
+
+        protected override void OnParametersSet()
+        {
+            if(Id != null){
+                var titularHallado = ObtenerTitularUseCase.Ejecutar(Id.Value);
+                if(titularHallado != null)
+                    _titular = titularHallado;
+                    _esNuevoTitular = false;
+            }
+        }
+    
+    void Modificar()
+    {
+        ModificarTitularUseCase.Ejecutar(_titular);
+        _titular = new Titular();
+        Navegador.NavigateTo("/listadotitulares");
+        
+    }
+}
