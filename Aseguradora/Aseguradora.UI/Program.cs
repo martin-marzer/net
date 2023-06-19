@@ -22,6 +22,8 @@ builder.Services.AddTransient<AgregarTitularUseCase>();
 builder.Services.AddTransient<ListarTitularesUseCase>();
 builder.Services.AddTransient<EliminarTitularUseCase>();
 builder.Services.AddTransient<ModificarTitularUseCase>();
+builder.Services.AddTransient<ObtenerTitularUseCase>();
+builder.Services.AddTransient<ListarTitularesConSusVehiculosUseCase>();
 builder.Services.AddScoped<IRepositorioTitular, RepositorioTitular>();
 
 builder.Services.AddTransient<AgregarVehiculoUseCase>();
@@ -48,9 +50,6 @@ builder.Services.AddTransient<EliminarTerceroUseCase>();
 builder.Services.AddTransient<ModificarTerceroUseCase>();
 builder.Services.AddScoped<IRepositorioTercero, RepositorioTercero>();
 
-
-
-builder.Services.AddTransient<ObtenerTitularUseCase>();
 
 
 //PREGUNTAR POR LISTARTITULARESUSECASE

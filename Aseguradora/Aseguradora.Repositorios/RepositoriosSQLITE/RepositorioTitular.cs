@@ -1,5 +1,6 @@
 using Aseguradora.Aplicacion.Entidades;
 using Aseguradora.Aplicacion.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aseguradora.Repositorios;
 
@@ -48,6 +49,14 @@ public class RepositorioTitular : IRepositorioTitular{
         using(var context = new AseguradoraContext()){
             var titulares = context.Titulares.ToList();
             return titulares;
+        }
+    }
+
+    public List<Titular> ListarTitularesConSusVehiculos()
+    {
+        using(var context = new AseguradoraContext())
+        {
+            return context.Titulares.Include(t => t.listaVehiculos).ToList();
         }
     }
 

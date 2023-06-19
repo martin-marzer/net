@@ -8,4 +8,5 @@ public interface IRepositorioTitular{
     void EliminarTitular(int ID);
     Titular? ObtenerTitular(int ID);
     List<Titular> ListarTitulares();
+    List<Titular> ListarTitularesConSusVehiculos();
 }

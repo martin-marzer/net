@@ -1,8 +1,8 @@
 namespace Aseguradora.Aplicacion.Entidades;
 
 public class Titular : Persona{ 
-    public string Direccion {get; set;}
-    public string Email {get; set;}
+    public string? Direccion {get; set;}
+    public string? Email {get; set;}
 
     public List<Vehiculo> listaVehiculos {get; set;} = new List<Vehiculo>(); //Se guardan los vehiculos pertenecientes al titular
 

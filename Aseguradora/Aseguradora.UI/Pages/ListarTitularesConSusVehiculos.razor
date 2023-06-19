@@ -1,0 +1,35 @@
+@page "/titularesconvehiculos"
+@inject ListarTitularesConSusVehiculosUseCase ListarTitularesConSusVehiculosUseCase
+
+<h1>Listado de titulares con sus vehiculos</h1>
+
+@foreach (var titular in lista)
+{
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+        <h3>@titular.ID - @titular.Apellido, @titular.Nombre</h3>
+        <p><strong>DNI:</strong> @titular.DNI</p>
+        <p><strong>Email:</strong> @titular.Email</p>
+        <p><strong>Teléfono:</strong> @titular.Telefono</p>
+        <p><strong>Dirección:</strong> @titular.Direccion</p>
+        <h4>Vehículos:</h4>
+        <ul>
+            @foreach (var vehiculo in titular.listaVehiculos)
+            {
+                <li>
+                    <strong>ID:</strong> @vehiculo.ID |
+                    <strong>Dominio:</strong> @vehiculo.Dominio |
+                    <strong>Marca:</strong> @vehiculo.Marca |
+                    <strong>Año de fabricación:</strong> @vehiculo.AnioFabricacion
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+@code{
+        List<Titular> lista = new List<Titular>();
+        protected override void OnInitialized()
+        {
+            lista = ListarTitularesConSusVehiculosUseCase.Ejecutar();
+        }
+}

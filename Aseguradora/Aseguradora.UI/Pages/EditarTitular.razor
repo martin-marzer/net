@@ -14,13 +14,14 @@
 
 @code
 {
-    public Titular _titular = new Titular();
+    Titular _titular = new Titular();
     [Parameter] public int? Id {get; set;}
         protected override void OnParametersSet()
         {
             if(Id != null){
                 var titularHallado = ObtenerTitularUseCase.Ejecutar(Id.Value);
-                _titular = titularHallado;
+                if(titularHallado != null)
+                    _titular = titularHallado;
             }
         }
     
