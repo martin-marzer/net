@@ -13,10 +13,16 @@ public class RepositorioPoliza : IRepositorioPoliza
     }
     public void AgregarPoliza(Poliza poliza){
         using(var context = new AseguradoraContext()){
-            if(!context.Vehiculos.Any(v=>v.ID==poliza.VehiculoId))throw new Exception("no existe ese vehiculo, no pudo ser agregado");
+            if(!context.Vehiculos.Any(v=>v.ID==poliza.VehiculoId))throw new Exception("No existe ese id de vehiculo");
+            if(tieneCamposVacios(poliza))throw new Exception("Debe completar todos los campos");
             context.Add(poliza);
             context.SaveChanges();
         }
+    }
+
+    private bool tieneCamposVacios(Poliza poliza)
+    {
+        return string.IsNullOrEmpty(poliza.Franquicia) || string.IsNullOrEmpty(poliza.TipoDeCobertura);
     }
 
     public void ModificarPoliza(Poliza poliza){

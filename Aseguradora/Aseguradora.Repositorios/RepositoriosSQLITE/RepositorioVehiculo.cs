@@ -13,11 +13,17 @@ public class RepositorioVehiculo:IRepositorioVehiculo
     {
         using (var context= new AseguradoraContext())
         {
-            if(context.Vehiculos.Any(v=>v.Dominio==vehiculo.Dominio))throw new Exception("probablemente ya exista ese vehiculo");
-            if(!context.Titulares.Any(t=>t.ID==vehiculo.TitularId))throw new Exception("no existe ese titular, no pudo ser agregado");
+            if(context.Vehiculos.Any(v=>v.Dominio==vehiculo.Dominio))throw new Exception("El vehiculo ya existe");
+            if(!context.Titulares.Any(t=>t.ID==vehiculo.TitularId))throw new Exception("No existe el titular especificado, no pudo ser agregado");
+            if(tieneCamposVacios(vehiculo))throw new Exception("Debe completar todos los campos");
             context.Add(vehiculo);
             context.SaveChanges();
         }
+    }
+
+    private bool tieneCamposVacios(Vehiculo vehiculo)
+    {
+        return string.IsNullOrEmpty(vehiculo.Dominio) || string.IsNullOrEmpty(vehiculo.Marca);
     }
 
     public void ModificarVehiculo(Vehiculo vehiculo)
@@ -39,7 +45,7 @@ public class RepositorioVehiculo:IRepositorioVehiculo
         using (var context= new AseguradoraContext())
         {
             var registro = context.Vehiculos.SingleOrDefault(v => v.ID == id);
-            if(registro == null) throw new Exception("No se pudo eliminar, el vehiculo no existe");
+            if(registro == null) throw new Exception("El vehiculo no existe");
 
             context.Vehiculos.Remove(registro);
             context.SaveChanges();

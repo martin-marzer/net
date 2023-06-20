@@ -16,13 +16,18 @@ public class RepositorioSiniestro : IRepositorioSiniestro
         using (var context = new AseguradoraContext())
         {
             var poliza = context.Polizas.FirstOrDefault(p => p.ID == siniestro.PolizaId);
-            if (poliza == null) throw new Exception("lo siento compadre, no existe ese id de poliza, intenta de nuevo ");
-
-            if (poliza.FechaDeFinDeVigencia <= siniestro.FechaDeOcurrencia) throw new Exception($"no podes registrar el siniestro de la fecha {siniestro.FechaDeOcurrencia}  porque tu seguro ya vencio {poliza.FechaDeFinDeVigencia}");
+            if (poliza == null) throw new Exception("El id de la poliza no es valido");
+            if(tieneCamposVacios(siniestro))throw new Exception("Debe completar todos los campos");
+            if (poliza.FechaDeFinDeVigencia <= siniestro.FechaDeOcurrencia) throw new Exception($"No se puede registrar el siniestro de la fecha {siniestro.FechaDeOcurrencia}  porque tu seguro ya vencio en {poliza.FechaDeFinDeVigencia}");
             
             context.Add(siniestro);
             context.SaveChanges();
         }
+    }
+    
+    private bool tieneCamposVacios(Siniestro siniestro)
+    {
+        return string.IsNullOrEmpty(siniestro.DescripcionDelAccidente) || string.IsNullOrEmpty(siniestro.DireccionDelHecho);
     }
 
     public void ModificarSiniestro(Siniestro siniestroModificado)
@@ -31,9 +36,9 @@ public class RepositorioSiniestro : IRepositorioSiniestro
         using (var context = new AseguradoraContext())
         {
             var siniestroEncontrado = context.Siniestros.FirstOrDefault(s => s.ID == siniestroModificado.ID);
-            if (siniestroEncontrado == null) throw new Exception("lo siento compadre, no existe ese siniestro, intenta de nuevo ");
+            if (siniestroEncontrado == null) throw new Exception("El siniestro no existe");
             
-            if(!context.Polizas.Any(v => v.ID == siniestroModificado.PolizaId)) throw new Exception("el id de la poliza no es valido, intenta de nuevo ");
+            if(!context.Polizas.Any(v => v.ID == siniestroModificado.PolizaId)) throw new Exception("El id de la poliza no es valido");
 
             siniestroEncontrado.DireccionDelHecho =  siniestroModificado.DireccionDelHecho;
             siniestroEncontrado.DescripcionDelAccidente = siniestroModificado.DescripcionDelAccidente;
@@ -56,7 +61,7 @@ public class RepositorioSiniestro : IRepositorioSiniestro
             if (siniestroElim != null) {
                 context.RemoveRange(siniestroElim);
                 context.SaveChanges();        
-            } else Console.WriteLine("lo siento compadre, no existe el siniestro con ese ID, intenta de nuevo ");
+            } else Console.WriteLine("No existe ese siniestro");
         }
     }
 
